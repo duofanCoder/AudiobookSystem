@@ -2,9 +2,14 @@
   <div class="flex gap-4 mt-9 px-10">
     <div class="">
       <div
-        class="flex items-center border border-yellow-300 justify-center bg-yellow-100 w-12 h-12 my-auto"
+        @click="doAction('speech')"
+        class="hover:cursor-pointer flex items-center border border-yellow-300 justify-center bg-yellow-100 w-12 h-12 my-auto"
       >
         <i-ic-baseline-headset-mic class="text-green-500 w-6 h-6" />
+      </div>
+
+      <div>
+        <audio ref="audioRef"></audio>
       </div>
       <div
         class="flex items-center border border-yellow-300 justify-center bg-yellow-100 w-12 h-12 my-auto"
@@ -87,5 +92,26 @@
     </div>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { ref } from 'vue';
+  const a =
+    'https://fanyi.sogou.com/reventondc/synthesis?speed=1&lang=zh-CHS&from=translateweb&speaker=6&text=' +
+    '你好啊啊啊啊啊啊啊啊啊啊啊啊';
+
+  const audioRef = ref(null);
+  const doAction = (action: string) => {
+    switch (action) {
+      case 'speech':
+        console.log(a);
+        audioRef.value.src = a;
+        audioRef.value.play();
+        console.log('shuohuae');
+        console.log('shuohuae4');
+
+        break;
+      default:
+        break;
+    }
+  };
+</script>
 <style scoped></style>
