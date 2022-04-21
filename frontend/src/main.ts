@@ -1,4 +1,4 @@
-import Provider from './layouts/Provider.vue';
+import Provider from '@/layouts/Provider.vue';
 import { setupRouter } from '@/router';
 import { createApp } from 'vue';
 import 'virtual:windi.css';

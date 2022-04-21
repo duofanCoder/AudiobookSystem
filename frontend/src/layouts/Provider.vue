@@ -4,6 +4,7 @@
       <n-message-provider>
         <n-notification-provider>
           <n-loading-bar-provider>
+            <Header />
             <App></App>
           </n-loading-bar-provider>
         </n-notification-provider>
@@ -15,5 +16,7 @@
 <script lang="ts" setup>
   import { zhCN, dateZhCN } from 'naive-ui';
   import App from '@/App.vue';
+
+  import { Header } from './components';
 </script>
 <style></style>

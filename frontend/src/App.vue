@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { useDialog, useLoadingBar, useMessage, useNotification } from 'naive-ui';
-  import { Layout } from '@/layouts';
   window.$message = useMessage();
   window.$dialog = useDialog();
   window.$notification = useNotification();
@@ -8,9 +7,7 @@
 </script>
 
 <template>
-  <layout>
-    <router-view></router-view>
-  </layout>
+  <router-view></router-view>
 </template>
 
 <style>

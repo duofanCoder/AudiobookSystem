@@ -1,4 +1,3 @@
-import Provider from './Provider.vue';
-import Layout from './Layout.vue';
+import Provider from '../layouts/Provider.vue';
 
-export { Provider, Layout };
+export { Provider };

@@ -1,34 +1,25 @@
 <template>
-  <n-space justify="space-between" class="w-full h-full min-w-screen-sm flex">
-    <n-space align="center" class="h-full">
-      <div @click="$emit('update:collapsed', !collapsed)">
-        <div class="p-18px">
-          <i-ri-menu-unfold-fill v-if="collapsed" class="align-middle" />
-          <i-ri-menu-fold-fill v-else class="align-middle" />
-        </div>
-      </div>
-      <div class="p-18px">
-        <i-mdi-refresh class="align-middle" />
-      </div>
-    </n-space>
-
-    <n-space align="center">
-      <div @click="inverted = !inverted" class="p-18px">
-        <i-ion-sunny v-if="inverted" class="align-middle" />
-        <i-bi-moon-fill v-else class="align-middle" />
-      </div>
-      <!-- <n-dropdown :options="options" @select="handleSelect" class="align-middle">
-        <n-icon> <i-clarity-avatar-solid class="align-middle" /></n-icon>
-        多凡
-      </n-dropdown> -->
-    </n-space>
+  <n-space justify="space-between" align="center" class="flex border-b px-6 h-16">
+    <div class="flex gap-5 text-xl">
+      <router-link to="/" :class="[route.name == 'index' ? 'text-green-500' : '']"
+        >首页</router-link
+      >
+      <router-link to="/shelf" :class="[route.name == 'shelf' ? 'text-green-500' : '']"
+        >书架</router-link
+      >
+      <router-link to="/category" :class="[route.name == 'category' ? 'text-green-500' : '']"
+        >分类</router-link
+      >
+    </div>
+    <n-input></n-input>
   </n-space>
 </template>
 <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  defineProps({
-    collapsed: Boolean,
-    inverted: Boolean,
-  });
+  import { useRoute } from 'vue-router';
+
+  const route = useRoute();
 </script>
-<style></style>
+<style scoped>
+  .menuActive {
+  }
+</style>
