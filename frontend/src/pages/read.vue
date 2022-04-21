@@ -12,10 +12,11 @@
         <audio ref="audioRef"></audio>
       </div>
       <div
-        class="flex items-center border border-yellow-300 justify-center bg-yellow-100 w-12 h-12 my-auto"
+        class="flex items-center border border-yellow-300 cursor-pointer justify-center bg-yellow-100 w-12 h-12 my-auto"
       >
-        <i-ic-baseline-headset-mic class="text-green-500 w-6 h-6" /> </div
-    ></div>
+        <i-mdi-bookshelf class="text-green-500 w-6 h-6" />
+      </div>
+    </div>
 
     <div class="flex flex-col gap-3">
       <div
@@ -36,7 +37,17 @@
           <span class="align-middle"> 第一章 门派弃徒</span>
         </div>
         <div>
-          “斗之力，三段！”
+          {{ content }}
+        </div>
+      </div>
+      <div class="text-center my-8"> 到底了 </div>
+    </div>
+  </div>
+</template>
+<script setup lang="ts">
+  import { ref } from 'vue';
+
+  const content = `“斗之力，三段！”
           望着测验魔石碑上面闪亮得甚至有些刺眼的五个大字，少年面无表情，唇角有着一抹自嘲，紧握的手掌，因为大力，而导致略微尖锐的指甲深深的刺进了掌心之中，带来一阵阵钻心的疼痛…
           “萧炎，斗之力，三段！级别：低级！”测验魔石碑之旁，一位中年男子，看了一眼碑上所显示出来的信息，语气漠然的将之公布了出来…
           中年男子话刚刚脱口，便是不出意外的在人头汹涌的广场上带起了一阵嘲讽的骚动。
@@ -85,29 +96,43 @@
           “呵呵，自在人？我也只会说而已，你看我现在的模样，像自在人吗？而且…这世界，本来就不属于我。”萧炎自嘲的一笑，意兴阑珊的道。
           面对着萧炎的颓废，萧薰儿纤细的眉毛微微皱了皱，认真的道：“萧炎哥哥，虽然并不知道你究竟是怎么回事，不过，薰儿相信，你会重新站起来，取回属于你的荣耀与尊严…”话到此处，微顿了顿，少女白皙的俏脸，头一次露出淡淡的绯红：“当年的萧炎哥哥，的确很吸引人…”
           “呵呵…”面对着少女毫不掩饰的坦率话语，少年尴尬的笑了一声，可却未再说什么，人不风流枉少年，可现在的他，实在没这资格与心情，落寞的回转过身，对着广场之外缓缓行去…
-          站在原地望着少年那恍如与世隔绝的孤独背影，萧薰儿踌躇了一会，然后在身后一干嫉妒的狼嚎声中，快步追了上去，与少年并肩而行…
-        </div>
-      </div>
-      <div class="text-center my-8"> 到底了 </div>
-    </div>
-  </div>
-</template>
-<script setup lang="ts">
-  import { ref } from 'vue';
-  const a =
-    'https://fanyi.sogou.com/reventondc/synthesis?speed=1&lang=zh-CHS&from=translateweb&speaker=6&text=' +
-    '你好啊啊啊啊啊啊啊啊啊啊啊啊';
+          站在原地望着少年那恍如与世隔绝的孤独背影，萧薰儿踌躇了一会，然后在身后一干嫉妒的狼嚎声中，快步追了上去，与少年并肩而行…`;
+  const audioRef = ref<HTMLAudioElement | null>(null);
 
-  const audioRef = ref(null);
   const doAction = (action: string) => {
     switch (action) {
       case 'speech':
-        console.log(a);
-        audioRef.value.src = a;
-        audioRef.value.play();
-        console.log('shuohuae');
-        console.log('shuohuae4');
-
+        const speakUrl =
+          'https://fanyi.sogou.com/reventondc/synthesis?speed=1&lang=zh-CHS&from=translateweb&speaker=6&text=';
+        audioRef.value = audioRef.value as HTMLAudioElement;
+        if (audioRef.value.paused == true) {
+          const num = content.length / 500;
+          const subArticleArr = new Array(); //分段阅读，每三百字三百字读，读完第一段读第二段
+          for (let i = 0; i < num; i++) {
+            const subText = content.substring(0 + i * 500, 500);
+            subArticleArr.push(subText);
+          }
+          let fenIndex = 0;
+          audioRef.value.src = speakUrl + subArticleArr[fenIndex];
+          audioRef.value.play();
+          audioRef.value.addEventListener(
+            'ended',
+            () => {
+              fenIndex++; //下标+1 读下一段
+              if (audioRef.value != null) {
+                if (fenIndex <= subArticleArr.length) {
+                  audioRef.value.src = speakUrl + subArticleArr[fenIndex];
+                  audioRef.value.play(); // 这个就是播放
+                } else {
+                  audioRef.value.pause();
+                }
+              }
+            },
+            false
+          );
+        } else {
+          audioRef.value.pause();
+        }
         break;
       default:
         break;

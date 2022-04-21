@@ -1,6 +1,5 @@
 import { h } from 'vue';
 import { Icon } from '@iconify/vue';
-import { ServiceParams } from 'vue-request/dist/types/core/utils/types';
 
 export const rendreIcon = (icon: string) => {
   return () =>

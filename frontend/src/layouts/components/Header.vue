@@ -1,17 +1,23 @@
 <template>
   <n-space justify="space-between" align="center" class="flex border-b px-6 h-16">
     <div class="flex gap-5 text-xl">
-      <router-link to="/" :class="[route.name == 'index' ? 'text-green-500' : '']"
-        >首页</router-link
-      >
-      <router-link to="/shelf" :class="[route.name == 'shelf' ? 'text-green-500' : '']"
-        >书架</router-link
-      >
-      <router-link to="/category" :class="[route.name == 'category' ? 'text-green-500' : '']"
-        >分类</router-link
-      >
+      <router-link to="/" class="text-green-500 font-extrabold text-2xl">听书网</router-link>
     </div>
-    <n-input></n-input>
+    <div class="flex items-center gap-5">
+      <div>
+        <n-input>
+          <template #suffix>
+            <n-icon> <i-carbon-search /> </n-icon>
+          </template>
+        </n-input>
+      </div>
+
+      <router-link to="/profile">
+        <n-icon :size="28">
+          <i-ph-user class="my-auto" />
+        </n-icon>
+      </router-link>
+    </div>
   </n-space>
 </template>
 <script setup lang="ts">
@@ -19,7 +25,4 @@
 
   const route = useRoute();
 </script>
-<style scoped>
-  .menuActive {
-  }
-</style>
+<style scoped></style>
