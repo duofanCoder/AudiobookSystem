@@ -2,9 +2,11 @@ package com.abao.as.controller.v1.api;
 
 import com.abao.as.controller.v1.command.PasswordFormCommand;
 import com.abao.as.controller.v1.command.ProfileFormCommand;
+import com.abao.as.controller.v1.request.ProfileRequest;
 import com.abao.as.controller.v1.request.UserSignupRequest;
 import com.abao.as.dto.model.common.UserDto;
 import com.abao.as.dto.response.Response;
+import com.abao.as.model.enums.UserRole;
 import com.abao.as.service.UserService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.Api;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -30,6 +33,9 @@ import javax.validation.constraints.NotNull;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @ApiOperation("Login")
     @PostMapping("/login")
@@ -65,7 +71,7 @@ public class UserController {
      */
     @PostMapping("/signup")
     public Response signup(@RequestBody @Valid UserSignupRequest userSignupRequest) {
-        return Response.ok().setData(registerUser(userSignupRequest, false));
+        return Response.ok().setData(registerUser(userSignupRequest));
     }
 
     /**
@@ -74,11 +80,11 @@ public class UserController {
      * @param userSignupRequest
      * @return
      */
-    private UserDto registerUser(UserSignupRequest userSignupRequest, boolean isAdmin) {
+    private UserDto registerUser(UserSignupRequest userSignupRequest) {
         UserDto userDto = new UserDto()
                 .setUsername(userSignupRequest.getUsername())
                 .setPassword(userSignupRequest.getPassword())
-                .setAdmin(isAdmin);
+                .setRole(UserRole.COMMON);
         return userService.signup(userDto);
     }
 
@@ -93,20 +99,28 @@ public class UserController {
 
     @PostMapping(value = "/profile")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response updateProfile(@RequestBody @Valid ProfileFormCommand profileFormCommand) {
+    public Response updateProfile(@RequestBody @Valid ProfileRequest profileRequest) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDto userDto = userService.findUserByUsername(auth.getName());
-        userDto
-                .setMobileNumber(profileFormCommand.getMobileNumber());
+        modelMapper.map(profileRequest, userDto);
         return Response.ok().setData(userService.updateProfile(userDto));
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class PasswordForm {
+        private String password;
     }
 
     @PostMapping(value = "/password")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
-    public Response changePassword(@Valid PasswordFormCommand passwordFormCommand) {
+    public Response changePassword(@RequestBody PasswordForm password) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDto userDto = userService.findUserByUsername(auth.getName());
-        userService.changePassword(userDto, passwordFormCommand.getPassword());
+        userService.changePassword(userDto, password.getPassword());
         SecurityContextHolder.getContext().setAuthentication(null);
         return Response.ok();
     }

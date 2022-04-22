@@ -16,22 +16,15 @@
           :class="[type == 'name' ? '' : 'hidden']"
           type="text"
           size="large"
-          v-model:value="userInfoModel.nickName"
-          placeholder="大"
-        />
-        <n-input
-          :class="[type == 'wechat' ? '' : 'hidden']"
-          type="text"
-          size="large"
-          v-model:value="userInfoModel.wechat"
-          placeholder="大"
+          v-model:value="userInfoModel.nickname"
+          placeholder="请输入昵称"
         />
         <n-input
           :class="[type == 'mobileNumber' ? '' : 'hidden']"
           type="text"
           size="large"
-          v-model:value="userInfoModel.mobileNumber"
-          placeholder="大"
+          v-model:value="userInfoModel.mobile"
+          placeholder="请输入手机号"
         />
         <n-radio-group
           size="large"
@@ -63,11 +56,11 @@
 <script setup lang="ts">
   import { fetchUpdateProfile } from '@/service';
   import { useUserStore } from '@/store';
-  import { isNull, isUndefined } from '@/utils';
+  import { isUndefined } from '@/utils';
   import { computed, reactive, toRaw } from 'vue';
   import { useRoute } from 'vue-router';
 
-  const { userInfo, setUserInfo } = useUserStore();
+  const { userInfo, updateUserInfo } = useUserStore();
   const userInfoModel = reactive(toRaw(userInfo));
 
   const defaultBirthTimeRef = computed(() => {
@@ -98,7 +91,6 @@
     ['mobileNumber', '手机号'],
     ['birth', '生日'],
     ['gender', '性别'],
-    ['wechat', '微信'],
   ]);
   const type = route.query.type?.toString();
   const info = computed(() => {
@@ -107,9 +99,9 @@
     }
   });
   const saveUserInfo = async () => {
-    const data = (await fetchUpdateProfile(toRaw(userInfoModel))) as unknown as API.UserInfo;
-    if (!isNull(data)) {
-      setUserInfo(data);
+    const data = await fetchUpdateProfile(toRaw(userInfoModel));
+    if (data.error == null) {
+      updateUserInfo(userInfoModel);
       window.$message.success('信息已更新');
     }
   };

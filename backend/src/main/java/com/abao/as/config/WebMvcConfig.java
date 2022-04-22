@@ -21,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/api/v1/**")
                 .allowedHeaders("*")
                 .allowedMethods("*")
-                .allowedOrigins("*")
+                .allowedOrigins("http://127.0.0.1:3000")
                 .allowCredentials(true)
                 .maxAge(3600);
     }

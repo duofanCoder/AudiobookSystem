@@ -12,5 +12,5 @@ export function fetchLogin(username: string, password: string) {
 
 /** 获取用户信息 */
 export function fetchUserInfo() {
-  return request.get<Dto.UserInfo>('/user/profile');
+  return request.get<Dto.User>('/user/profile');
 }

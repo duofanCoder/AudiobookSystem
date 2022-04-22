@@ -1,4 +1,4 @@
-import { EnumStorageKey } from '@/model/enum';
+import { EnumStorageKey } from '@/model/enum/common';
 import { setLocal, getLocal, removeLocal } from '../storage';
 
 /** 设置token */
@@ -31,7 +31,7 @@ export function removeRefreshToken() {
   removeLocal(EnumStorageKey['refresh-koken']);
 }
 export function getUserInfo() {
-  const emptyInfo: Dto.UserInfo = {
+  const emptyInfo: Dto.User = {
     id: 0,
     username: '',
     nickname: '',
@@ -41,13 +41,15 @@ export function getUserInfo() {
     birth: '',
     gender: false,
     shelf: [],
+    email: '',
+    password: '',
   };
-  const userInfo: Dto.UserInfo = getLocal<Dto.UserInfo>(EnumStorageKey['user-info']) || emptyInfo;
+  const userInfo: Dto.User = getLocal<Dto.User>(EnumStorageKey['user-info']) || emptyInfo;
   return userInfo;
 }
 
 /** 获取用户信息 */
-export function setUserInfo(userInfo: Dto.UserInfo) {
+export function setUserInfo(userInfo: Dto.User) {
   setLocal(EnumStorageKey['user-info'], userInfo);
 }
 

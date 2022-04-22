@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mb-20">
     <n-carousel draggable show-arrow autoplay>
       <img
         class="carousel-img"

@@ -1,16 +1,19 @@
 package com.abao.as.service;
 
+import cn.hutool.core.date.DateUtil;
 import com.abao.as.dto.mapper.UserMapper;
 import com.abao.as.dto.model.common.UserDto;
 import com.abao.as.model.common.User;
 import com.abao.as.model.enums.UserRole;
 import com.abao.as.repository.common.UserRepository;
+import io.swagger.models.Model;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 
@@ -25,6 +28,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public UserDto signup(UserDto userDto) {
         UserRole userRole;
@@ -34,8 +40,11 @@ public class UserServiceImpl implements UserService {
                     .setUsername(userDto.getUsername())
                     .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
                     .setRole(UserRole.COMMON)
-                    .setMobileNumber(userDto.getMobileNumber());
-            return UserMapper.toUserDto(userRepository.save(user));
+                    .setCreateTime(new Date())
+                    .setUpdateTime(new Date())
+                    .setBirth(DateUtil.parse("2000-01-01"))
+                    .setMobile(userDto.getMobile());
+            return userMapper.toUserDto(userRepository.save(user));
         } else {
             throw new RuntimeException("账号已存在！");
         }
@@ -67,9 +76,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateProfile(UserDto userDto) {
         User userModel = userRepository.findByUsername(userDto.getUsername());
-        userModel.setName(userDto.getName())
-                .setMobileNumber(userDto.getMobileNumber());
-        return UserMapper.toUserDto(userRepository.save(userModel));
+        modelMapper.map(userDto,userModel);
+        return userMapper.toUserDto(userRepository.save(userModel));
     }
 
     /**
@@ -83,7 +91,6 @@ public class UserServiceImpl implements UserService {
     public UserDto changePassword(UserDto userDto, String newPassword) {
         User userModel = userRepository.findByUsername(userDto.getUsername());
         userModel.setPassword(bCryptPasswordEncoder.encode(newPassword));
-        return UserMapper.toUserDto(userRepository.save(userModel));
+        return userMapper.toUserDto(userRepository.save(userModel));
     }
-
 }

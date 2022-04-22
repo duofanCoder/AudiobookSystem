@@ -25,10 +25,10 @@ export default defineConfig({
     }),
     Pages({
       extendRoute(route, parent) {
-        if (route.path.indexOf('/admin') == -1) {
-          // Index is unauthenticated.
+        if (route.path.indexOf('/profile') == -1) {
           return route;
         }
+
         // Augment the route with meta that indicates that the route requires authentication.
         return {
           ...route,

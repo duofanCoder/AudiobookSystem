@@ -1,6 +1,8 @@
 import { useState } from '@/store/Storage';
 import { NavigationGuardNext, RouteLocationNormalized, Router } from 'vue-router';
-const state = useState();
+import { useUserStore } from '@/store';
+import { getToken } from '@/utils';
+
 export async function createPermissionGuard(
   to: RouteLocationNormalized,
   _from: RouteLocationNormalized,
@@ -9,14 +11,13 @@ export async function createPermissionGuard(
 ) {
   const needLogin = Boolean(to.meta?.auth);
 
-  const isLogin = Boolean(state.value.CURRENT_USER);
-  // const isLogin = Boolean(window.localStorage.getItem('user'));
+  const isLogin = Boolean(getToken());
   const actions: [boolean, () => void][] = [
     // 已登录状态跳转登录页，跳转至首页
     [
       isLogin && to.name === 'login',
       () => {
-        next({ name: 'root' });
+        next({ name: 'index' });
       },
     ],
     // 不需要登录权限的页面直接通行

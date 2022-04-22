@@ -29,16 +29,13 @@ public class User {
     private Long id;
     private Date createTime;
     private Date updateTime;
-
     private String email;
     private String name;
-
+    private String nickname;
     private String password;
-
     private String username;
-
-    private String mobileNumber;
-
+    private String mobile;
+    private Date birth;
     @Enumerated(EnumType.STRING)
     private UserRole role;
 }

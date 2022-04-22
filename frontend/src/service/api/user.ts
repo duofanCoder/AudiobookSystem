@@ -9,7 +9,9 @@ export function fetchRemoveUser(ids: number[]) {
   ids.forEach((id) => searchParams.append('primaryKeys', id.toString()));
   return request.post(`/user/remove?${searchParams.toString()}`);
 }
-
+export function fetchRegisterUser(username: string, password: string) {
+  return request.post<Dto.Token>('/user/signup', { username, password });
+}
 export function fetchSaveUser(user: Partial<Dto.User>) {
   return request.post('/user/save', user);
 }
@@ -26,4 +28,8 @@ export function fetchResetUser(id: number) {
     id,
     password: '123456',
   });
+}
+
+export function fetchPasswordUser(password: string) {
+  return request.post('/user/password', { password });
 }

@@ -1,4 +1,4 @@
-import { EnumDataType } from '@/enum';
+import { EnumDataType } from '@/model';
 
 export function isNumber(data: unknown) {
   return Object.prototype.toString.call(data) === EnumDataType.number;

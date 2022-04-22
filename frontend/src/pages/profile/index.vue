@@ -2,12 +2,12 @@
   <div class="flex flex-col flex-1 w-full mx-auto justify-center max-w-235">
     <div class="text-center">
       <p class="font-medium text-3xl mt-12"> 个人信息 </p>
-      <p class="mt-3 text-lg">设置您在微筹里的个人信息和偏好设置</p>
+      <p class="mt-3 text-lg">设置您在听书网里的个人信息和偏好设置</p>
     </div>
 
     <div class="border py-5 mt-6 rounded-xl bg-white">
       <p class="text-2xl px-6">基本信息</p>
-      <p class="mt-2 px-6 tracking-widest mb-4">使用微筹的其他用户可能会看到部分信息。</p>
+      <p class="mt-2 px-6 tracking-widest mb-4">使用听书网的其他用户可能会看到部分信息。</p>
       <!-- w-50 -->
       <div
         class="flex text-base mx-6 border-b py-6 hover:(bg-true-gray-100 mx-0 px-6 cursor-pointer )"
@@ -15,7 +15,7 @@
         <div class="inline-flex self-center text-gray-500 w-50">照片</div>
         <div class="inline-flex self-center align-middle">更改照片可帮助您个性化您的账号</div>
         <div class="ml-auto items-center inline-flex">
-          <n-avatar :size="56" round src="/src/assets/material/avatar.png"> </n-avatar>
+          <n-avatar :size="56" round src="/src/assets/img/avatar.png"> </n-avatar>
         </div>
       </div>
 
@@ -25,7 +25,7 @@
         class="flex text-base mx-6 border-b py-6 hover:(bg-true-gray-100 mx-0 px-6 cursor-pointer )"
       >
         <div class="inline-flex self-center text-gray-500 w-50">姓名</div>
-        <div class="inline-flex self-center align-middle">{{ userInfo.nickName }}</div>
+        <div class="inline-flex self-center align-middle">{{ userInfo.nickname }}</div>
         <div class="ml-auto items-center inline-flex"
           ><i-grommet-icons-form-next class="w-7 h-7" />
         </div>
@@ -56,24 +56,28 @@
 
     <div class="border py-5 mt-6 rounded-xl bg-white">
       <p class="text-2xl px-6">联系信息</p>
-      <p class="mt-2 px-6 tracking-widest mb-4">使用微筹的其他用户可能会看到部分信息。</p>
+      <p class="mt-2 px-6 tracking-widest mb-4">使用听书网的其他用户可能会看到部分信息。</p>
       <!-- w-50 -->
-      <div
+      <!-- <div
         class="flex text-base mx-6 border-b py-6 hover:(bg-true-gray-100 mx-0 px-6 cursor-pointer )"
       >
         <div class="inline-flex self-center text-gray-500 w-50">电子邮件</div>
-        <div class="inline-flex self-center align-middle">{{ userInfo.email }}</div>
+        <div class="inline-flex self-center align-middle">{{
+          userInfo.email != undefined ? userInfo.email : '还没有设置'
+        }}</div>
         <div class="ml-auto items-center inline-flex">
-          <!-- <i-grommet-icons-form-next class="w-7 h-7" /> -->
+          <i-grommet-icons-form-next class="w-7 h-7" />
         </div>
-      </div>
+      </div> -->
 
       <router-link
         :to="{ name: 'profile-modify', query: { type: 'mobileNumber' } }"
         class="flex text-base mx-6 border-b py-6 hover:(bg-true-gray-100 mx-0 px-6 cursor-pointer )"
       >
         <div class="inline-flex self-center text-gray-500 w-50">电话</div>
-        <div class="inline-flex self-center align-middle">{{ userInfo.mobile }}</div>
+        <div class="inline-flex self-center align-middle">{{
+          userInfo.mobile ? userInfo.mobile : '还没有设置'
+        }}</div>
         <div class="ml-auto items-center inline-flex"
           ><i-grommet-icons-form-next class="w-7 h-7" />
         </div>
@@ -123,12 +127,15 @@
 </template>
 
 <script setup lang="ts">
+  import { fetchPasswordUser } from '@/service';
   import { useUserStore } from '@/store';
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
 
   const userStore = useUserStore();
 
-  const { userInfo } = userStore;
+  const userInfo = computed(() => {
+    return userStore.userInfo;
+  });
   const showPassswordModalRef = ref(false);
   const confirmChangePasswordRef = ref('');
   const changePasswordRef = ref('');
@@ -137,6 +144,11 @@
       window.$message.error('两次输入不一致！');
       return;
     } else {
+      fetchPasswordUser(changePasswordRef.value).then((res) => {
+        if (res.error == null) {
+          userStore.resetAuthStore();
+        }
+      });
     }
   };
 </script>

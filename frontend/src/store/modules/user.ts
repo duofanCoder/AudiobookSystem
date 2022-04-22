@@ -1,42 +1,35 @@
 import { useRouterPush } from '@/router/router';
 import { fetchLogin, fetchUserInfo } from '@/service';
-import { clearAuthStorage, getUserInfo, setToken, setUserInfo } from '@/utils';
+import { clearAuthStorage, getToken, getUserInfo, setToken, setUserInfo } from '@/utils';
 import { defineStore } from 'pinia';
-import { useState } from '../Storage';
 
-const state = useState();
 export interface IUserState {
   token: string;
-  userInfo: Dto.UserInfo;
+  userInfo: Dto.User;
 }
 
 export const useUserStore = defineStore({
   id: 'app-user',
   state: (): IUserState => ({
-    token: state.value.ACCESS_TOKEN,
+    token: getToken(),
     userInfo: getUserInfo(),
   }),
   getters: {
     isLogin(state) {
       return Boolean(state.token);
     },
-    userInfo(): IUserState {
-      return this.userInfo;
-    },
   },
   actions: {
-    setToken(token: string) {
-      this.token = token;
-    },
-    setUserInfo(info: Dto.UserInfo) {
+    updateUserInfo(info: Dto.User) {
       setUserInfo(info);
+      this.$state.userInfo = info;
     },
     async loginByToken(backendToken: Dto.Token) {
       const { toLoginRedirect } = useRouterPush(false);
 
       // 先把token存储到缓存中
-      const { token } = backendToken;
-      setToken(token);
+      const { prefix, token } = backendToken;
+      setToken(prefix + token);
 
       // 获取用户信息
       const { data } = await fetchUserInfo();
@@ -44,7 +37,7 @@ export const useUserStore = defineStore({
         // 成功后把用户信息存储到缓存中
         setUserInfo(data);
         // 更新状态
-        Object.assign(this, { userInfo: data, token });
+        Object.assign(this, { userInfo: data, token: prefix + token });
         // 跳转登录后的地址
         toLoginRedirect();
 

@@ -34,7 +34,7 @@ export function useRouterPush(inSetup: boolean = true) {
    * @param newTab - 在新的浏览器标签打开
    */
   function toHome(newTab = false) {
-    routerPush({ name: 'root' }, newTab);
+    routerPush({ name: 'index' }, newTab);
   }
 
   /**
@@ -56,6 +56,8 @@ export function useRouterPush(inSetup: boolean = true) {
    */
   function toLoginRedirect() {
     const { query } = route.value;
+    console.log(query);
+
     if (query?.redirect) {
       routerPush(query.redirect as string);
     } else {
