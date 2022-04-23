@@ -35,6 +35,7 @@ public class User {
     private String password;
     private String username;
     private String mobile;
+    private Boolean gender;
     private Date birth;
     @Enumerated(EnumType.STRING)
     private UserRole role;

@@ -16,9 +16,7 @@
     <div class="text-xl font-semibold py-3 border-b mb-4 mt-15"> 章节目录 </div>
     <n-grid x-gap="12" y-gap="24" :cols="3">
       <n-gi v-for="(item, index) of 99" :key="index">
-        <router-link to="/read">
-          <div> 第一章 门派弃徒 </div>
-        </router-link>
+        <router-link to="/read"> 第一章 门派弃徒 </router-link>
       </n-gi>
     </n-grid>
   </div>

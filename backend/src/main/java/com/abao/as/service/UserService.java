@@ -1,5 +1,7 @@
 package com.abao.as.service;
 
+import com.abao.as.controller.v1.condition.common.UserCondition;
+import com.abao.as.dto.model.common.PageDto;
 import com.abao.as.dto.model.common.UserDto;
 
 /**
@@ -37,4 +39,16 @@ public interface UserService {
      * @return
      */
     UserDto changePassword(UserDto userDto, String newPassword);
+
+
+    void removeByPrimaryKey(Long[] primaryKey);
+
+    UserDto save(UserDto dto);
+
+    UserDto getByPrimaryKey(Long primaryKey);
+
+    PageDto<UserDto> findPageByCondition(UserCondition condition);
+
+    UserDto update(UserDto dto);
+
 }

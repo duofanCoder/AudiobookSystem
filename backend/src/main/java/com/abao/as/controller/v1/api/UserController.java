@@ -2,8 +2,11 @@ package com.abao.as.controller.v1.api;
 
 import com.abao.as.controller.v1.command.PasswordFormCommand;
 import com.abao.as.controller.v1.command.ProfileFormCommand;
+import com.abao.as.controller.v1.condition.common.UserCondition;
 import com.abao.as.controller.v1.request.ProfileRequest;
+import com.abao.as.controller.v1.request.UserRequest;
 import com.abao.as.controller.v1.request.UserSignupRequest;
+import com.abao.as.dto.mapper.UserMapper;
 import com.abao.as.dto.model.common.UserDto;
 import com.abao.as.dto.response.Response;
 import com.abao.as.model.enums.UserRole;
@@ -36,6 +39,10 @@ public class UserController {
 
     @Autowired
     private ModelMapper modelMapper;
+
+
+    @Autowired
+    private UserMapper userMapper;
 
     @ApiOperation("Login")
     @PostMapping("/login")
@@ -106,14 +113,6 @@ public class UserController {
         return Response.ok().setData(userService.updateProfile(userDto));
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @NoArgsConstructor
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class PasswordForm {
-        private String password;
-    }
 
     @PostMapping(value = "/password")
     @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
@@ -123,5 +122,55 @@ public class UserController {
         userService.changePassword(userDto, password.getPassword());
         SecurityContextHolder.getContext().setAuthentication(null);
         return Response.ok();
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class PasswordForm {
+        private long id;
+        private String password;
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping(value = "/reset")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response resetPassword(@RequestBody PasswordForm passwordForm) {
+        UserDto userDto = userService.getByPrimaryKey(passwordForm.getId());
+        userService.changePassword(userDto, passwordForm.getPassword());
+        return Response.ok();
+    }
+
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("remove")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response remove(Long[] primaryKeys) {
+        userService.removeByPrimaryKey(primaryKeys);
+        return Response.ok();
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("update")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response update(@RequestBody UserRequest userRequest) {
+        return Response.ok().setData(userService.update(userMapper.toUserDto(userRequest)));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("save")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response save(@RequestBody UserRequest userRequest) {
+        return Response.ok().setData(userService.save(userMapper.toUserDto(userRequest)));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("query")
+    @ApiOperation(value = "", authorizations = {@Authorization(value = "apiKey")})
+    public Response save(@RequestBody UserCondition condition) {
+        return Response.ok().setData(userService.findPageByCondition(condition));
     }
 }

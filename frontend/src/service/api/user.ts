@@ -17,6 +17,7 @@ export function fetchSaveUser(user: Partial<Dto.User>) {
 }
 
 export function fetchUpdateUser(user: Partial<Dto.User>) {
+  console.log(user);
   return request.post('/user/update', user);
 }
 

@@ -26,12 +26,14 @@ import java.util.Date;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto {
+    private long id;
     private String username;
     private String password;
     private String nickname;
     private String name;
     private String email;
     private String mobile;
+    private Boolean gender;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -39,4 +41,9 @@ public class UserDto {
     private Date birth;
     private String avatar;
     private UserRole role;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Temporal(TemporalType.DATE)
+    private Date createTime;
 }

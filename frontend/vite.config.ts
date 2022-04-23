@@ -25,6 +25,15 @@ export default defineConfig({
     }),
     Pages({
       extendRoute(route, parent) {
+        if (route.name == 'admin-login') {
+          return route;
+        }
+        if (route.name != undefined && route.name.indexOf('admin') != -1) {
+          return {
+            ...route,
+            meta: { admin: true, auth: true },
+          };
+        }
         if (route.path.indexOf('/profile') == -1) {
           return route;
         }
@@ -32,7 +41,7 @@ export default defineConfig({
         // Augment the route with meta that indicates that the route requires authentication.
         return {
           ...route,
-          meta: { auth: true },
+          meta: { auth: true, admin: false },
         };
       },
     }),

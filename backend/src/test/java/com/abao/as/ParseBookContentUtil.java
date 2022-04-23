@@ -20,8 +20,11 @@ import java.util.regex.Pattern;
  */
 public class ParseBookContentUtil {
 
+    //    ------------
+//
+//    第二章 指导战
     public static void main(String[] args) {
-        String fileNamedirs="/Users/duofan/Documents/project/xyDemo/AudiobookSystem/data/斗破苍穹.txt";
+        String fileNamedirs = "E:\\Project\\xyDemo\\AudiobookSystem\\backend\\storage\\仙缘剑路.txt";
         try {
             // 编码格式
             String encoding = "utf8";
@@ -33,64 +36,42 @@ public class ParseBookContentUtil {
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 Long count = (long) 0;
-                boolean bflag=false;
-                int n=0;
-                String newStr=null;
-                String titleName=null;
-                String newChapterName = null;//新章节名称
-                String substring=null;
-                int indexOf=0;
-                int indexOf1=0;
-                int line=0;
                 //小说内容类
-                Content content;
+                Content content = null;
+                boolean isFirstChapterShow = false;
+                boolean findFlag = true;
                 while ((lineTxt = bufferedReader.readLine()) != null) {
-                    content=new Content();
                     //小说名称
-                    content.setName("斗破苍穹");
-
-                    count++;
                     // 正则表达式
                     Pattern p = Pattern.compile("(^\\s*第)(.{1,9})[章节卷集部篇回](\\s{1})(.*)($\\s*)");
-
                     Matcher matcher = p.matcher(lineTxt);
-                    Matcher matcher1 = p.matcher(lineTxt);
-
-                    newStr=newStr+lineTxt;
-
-                    while (matcher.find()) {
-                        titleName = matcher.group();
-                        //章节去空
-                        newChapterName = titleName.trim();
-                        //获取章节
-                        //System.out.println(newChapterName);
-                        content.setChapter(newChapterName);
-                        indexOf1=indexOf;
-                        //System.out.println(indexOf);
-                        indexOf = newStr.indexOf(newChapterName);
-                        // System.out.println(newChapterName + ":" + "第" + count + "行"); // 得到返回的章
-                        if(bflag) {
-                            bflag=false;
-                            break;
+                    boolean tmpFlag = findFlag;
+                    findFlag = matcher.find();
+                    // 上一行没找到，这一行找到了
+                    if (findFlag && !tmpFlag) {
+                        if (content != null) {
+                            System.out.println(content);
                         }
-                        if(n==0) {
-                            indexOf1 = newStr.indexOf(newChapterName);
-                        }
-                        n=1;
-                        bflag=true;
-                        //System.out.println(chapter);
+                        isFirstChapterShow = true;
+                        String chapterName = matcher.group().trim();
+                        content = new Content();
+                        content.setName("宇宙职业选手");
+                        content.setId(count++);
+                        content.setChapter(chapterName);
+                        content.setContent("");
+                        continue;
                     }
-                    while(matcher1.find()) {
-                        if(indexOf!=indexOf1) {
-                            //根据章节数量生成
-                            content.setNumber(++line);
-                            content.setId(line);
-                            substring = newStr.substring(indexOf1, indexOf);
-                            //System.out.println(substring);
-                            content.setContent(substring);
-                            System.out.println(content.toString());
+                    if (isFirstChapterShow) {
+                        if (content != null && content.getContent() != null) {
+                            if (lineTxt.trim().length() == 0) {
+                                content.setContent(content.getContent() + '\n');
+                            } else {
+                                content.setContent(content.getContent() + lineTxt);
+                            }
                         }
+
                     }
+
                 }
                 bufferedReader.close();
             } else {

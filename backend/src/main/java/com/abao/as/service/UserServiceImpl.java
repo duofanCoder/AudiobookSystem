@@ -1,20 +1,27 @@
 package com.abao.as.service;
 
 import cn.hutool.core.date.DateUtil;
+import com.abao.as.controller.v1.condition.common.UserCondition;
 import com.abao.as.dto.mapper.UserMapper;
+import com.abao.as.dto.model.common.PageDto;
 import com.abao.as.dto.model.common.UserDto;
+import com.abao.as.exception.type.OwnerException;
 import com.abao.as.model.common.User;
 import com.abao.as.model.enums.UserRole;
 import com.abao.as.repository.common.UserRepository;
 import io.swagger.models.Model;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Optional;
+import javax.persistence.criteria.Predicate;
+import java.util.*;
 
 
 @Component
@@ -50,6 +57,21 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+
+    /**
+     * Update User Profile
+     *
+     * @param userDto
+     * @return
+     */
+//    @Override
+//    public UserDto updateProfile(UserDto userDto) {
+//        User userModel = userRepository.findByUsername(userDto.getUsername());
+//        modelMapper.map(userDto, userModel);
+//        return userMapper.toUserDto(userRepository.save(userModel));
+//    }
+
+
     /**
      * Search an existing user
      *
@@ -61,7 +83,7 @@ public class UserServiceImpl implements UserService {
     public UserDto findUserByUsername(String email) {
         Optional<User> user = Optional.ofNullable(userRepository.findByUsername(email));
         if (user.isPresent()) {
-            return modelMapper.map(user.get(), UserDto.class);
+            return userMapper.toUserDto(user.get());
         } else {
             return null;
         }
@@ -76,7 +98,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateProfile(UserDto userDto) {
         User userModel = userRepository.findByUsername(userDto.getUsername());
-        modelMapper.map(userDto,userModel);
+        userModel.setName(userDto.getName())
+                .setGender(userDto.getGender())
+                .setUpdateTime(new Date())
+                .setMobile(userDto.getMobile());
         return userMapper.toUserDto(userRepository.save(userModel));
     }
 
@@ -92,5 +117,66 @@ public class UserServiceImpl implements UserService {
         User userModel = userRepository.findByUsername(userDto.getUsername());
         userModel.setPassword(bCryptPasswordEncoder.encode(newPassword));
         return userMapper.toUserDto(userRepository.save(userModel));
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void removeByPrimaryKey(Long[] primaryKey) {
+        for (int i = 0; i < primaryKey.length; i++) {
+            userRepository.deleteById(primaryKey[i]);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    // 新增操作
+    public UserDto save(UserDto dto) {
+        return signup(dto);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserDto getByPrimaryKey(Long primaryKey) {
+        return userMapper.toUserDto(userRepository.findById(primaryKey).get());
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public PageDto<UserDto> findPageByCondition(UserCondition condition) {
+        LinkedList<UserDto> list = new LinkedList<>();
+        PageRequest pageable = PageRequest.of(condition.getPageNum(), condition.getPageSize(), Sort.by("createTime"));
+        Specification<User> spec = (root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            if (!condition.getName().isEmpty()) {
+                predicateList.add(criteriaBuilder.like(root.get("name").as(String.class), "%" + condition.getName() + "%"));
+            }
+            return criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()])).getRestriction();
+        };
+        Page<User> modelPages = userRepository.findAll(spec, pageable);
+        for (User model : modelPages.getContent()) {
+            list.add(userMapper.toUserDto(model));
+        }
+        return new PageDto<UserDto>()
+                .setCurrentPage(pageable.getPageNumber())
+                .setTotalPage(modelPages.getTotalPages())
+                .setData(list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserDto update(UserDto dto) {
+        User model = userRepository.findById(dto.getId()).orElseThrow(
+                () -> new OwnerException("修改的用户不存在！")
+        );
+        model.setBirth(dto.getBirth())
+                .setUsername(dto.getUsername())
+                .setNickname(dto.getNickname())
+                .setUpdateTime(new Date())
+                .setEmail(dto.getEmail())
+                .setName(dto.getName())
+                .setGender(dto.getGender())
+                .setMobile(dto.getMobile());
+        return modelMapper.map(userRepository.save(model), UserDto.class);
     }
 }

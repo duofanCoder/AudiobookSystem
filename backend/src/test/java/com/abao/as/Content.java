@@ -9,6 +9,7 @@ public class Content {
     private String content;
     //新生成章节
     private long number;
+    private long order;
 
     public Content() {
     }

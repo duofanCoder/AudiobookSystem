@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-300">
     <div class="w-55vw">
-      <n-grid :cols="2" class="h-160">
+      <n-grid :cols="2">
         <n-gi>
           <div class="bg-warm-gray-900 h-full flex">
             <img src="@/assets/img/pablo-book-lover.png" class="my-auto" />
@@ -10,7 +10,6 @@
         <n-gi>
           <div class="bg-white items-center h-full flex flex-col">
             <div class="text-3xl mb-15 mt-20 font-extrabold"> WelCome！ </div>
-            <div>{{ userActionForm }}</div>
             <div class="px-3">
               <n-tabs
                 class="card-tabs"
@@ -99,7 +98,7 @@
   const submitAction = (action: string) => {
     switch (action) {
       case 'login':
-        userStore.login(userActionForm.username, userActionForm.password);
+        userStore.login(userActionForm.username, userActionForm.password, false);
         break;
       case 'register':
         fetchRegisterUser(userActionForm.username, userActionForm.password).then((res) => {

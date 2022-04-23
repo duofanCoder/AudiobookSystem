@@ -5,7 +5,7 @@
     </div>
     <div class="flex items-center gap-5">
       <div>
-        <n-input>
+        <n-input v-model:value="searchKey" @keyup.enter="jump2Click">
           <template #suffix>
             <n-icon> <i-carbon-search /> </n-icon>
           </template>
@@ -21,8 +21,19 @@
   </n-space>
 </template>
 <script setup lang="ts">
-  import { useRoute } from 'vue-router';
+  import { useRouter } from 'vue-router';
+  import { ref } from 'vue';
+  const searchKey = ref('');
 
-  const route = useRoute();
+  const router = useRouter();
+
+  const jump2Click = () => {
+    router.push({
+      name: 'result',
+      query: {
+        key: searchKey.value,
+      },
+    });
+  };
 </script>
 <style scoped></style>
