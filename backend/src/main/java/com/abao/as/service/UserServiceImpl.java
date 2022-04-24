@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             user = new User()
                     .setUsername(userDto.getUsername())
+                    .setNickname(userDto.getNickname())
                     .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
                     .setRole(UserRole.COMMON)
                     .setCreateTime(new Date())
