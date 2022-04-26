@@ -17,9 +17,22 @@ export async function transformRequestData(requestData: any, contentType?: strin
   }
   // form-data类型转换
   if (contentType === EnumContentType.formData) {
-    const key = Object.keys(requestData)[0];
-    const file = requestData.data[key];
-    data = await transformFile(file, key);
+    if (Object.keys(requestData).length == 1) {
+      const key = Object.keys(requestData)[0];
+      const file = requestData.data[key];
+      data = await transformFile(file, key);
+    } else {
+      const keys = Object.keys(requestData);
+      console.log(keys);
+      var myform = new FormData();
+      await myform.append('file', requestData['file'].file);
+      keys.forEach((key) => {
+        if (key != 'file' && requestData[key] != undefined) {
+          myform.append(key, requestData[key]);
+        }
+      });
+      data = myform;
+    }
   }
   return data;
 }

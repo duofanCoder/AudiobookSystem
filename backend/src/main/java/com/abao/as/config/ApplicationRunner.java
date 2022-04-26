@@ -22,7 +22,6 @@ public class ApplicationRunner extends ContextLoaderListener implements org.spri
     @Override
     public void run(ApplicationArguments applicationArguments) {
         log.info("项目部署完成，swagger访问地址：http://localhost:" + port+"/swagger-ui/index.html");
-        System.out.println("Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkdW9mYW4iLCJyb2xlcyI6WyJDT01NT04iXSwiZXhwIjoxNjUxNDc4NDUyfQ.pDDz7j7vnQMKpO0QT48a6bxec-zRYpKHgz8WeLHERcS989KvopJZ4_JoHZMexNkwF4cVLlTKWHsgdFxiII94ng");
     }
 
     @Override

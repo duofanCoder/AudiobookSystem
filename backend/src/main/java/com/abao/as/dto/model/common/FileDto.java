@@ -23,6 +23,7 @@ import lombok.experimental.Accessors;
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FileDto {
+    private long id;
     private String filePath;
 
     private String fullFilePath;

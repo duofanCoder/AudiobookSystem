@@ -20,9 +20,6 @@ import java.util.regex.Pattern;
  */
 public class ParseBookContentUtil {
 
-    //    ------------
-//
-//    第二章 指导战
     public static void main(String[] args) {
         String fileNamedirs = "E:\\Project\\xyDemo\\AudiobookSystem\\backend\\storage\\仙缘剑路.txt";
         try {

@@ -1,5 +1,6 @@
 package com.abao.as.model.common;
 
+import com.abao.as.model.business.Book;
 import com.abao.as.model.enums.UserRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Arpit Khandelwal.
@@ -39,4 +42,11 @@ public class User {
     private Date birth;
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "biz_love_book",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "book_id")}
+    )
+    private Set<Book> bookList;
 }

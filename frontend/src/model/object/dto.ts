@@ -26,9 +26,25 @@ declare namespace Dto {
   }
 
   interface Book {
-    title: string;
+    id: number;
+    name: string;
     author: string;
+    category: string;
     img: string;
+    createTime: string;
+    updateTime: string;
     description: string;
+    file: File;
+    chapterList: Array<Dto.Chapter> | undefined;
+  }
+
+  interface Chapter {
+    id: number;
+    name: string;
+    createTime: string;
+    updateTime: string;
+    description: string;
+    content: string;
+    queue: number;
   }
 }

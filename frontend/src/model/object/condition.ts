@@ -1,15 +1,29 @@
-declare namespace Condition {
-  interface Common {
+import { Category } from '../enum/business';
+
+export namespace Condition {
+  export interface Common {
     name: string;
     pageSize: number;
     pageNum: number;
   }
-  interface User {
+  export interface User {
     pageSize: number;
     pageNum: number;
     name: string;
     gander: boolean;
-    positionId: number;
-    departmentId: number;
+  }
+
+  export interface Book {
+    pageSize: number;
+    pageNum: number;
+    name: string;
+    author: string;
+    category: Category;
+  }
+
+  export interface Chapter {
+    pageSize: number;
+    pageNum: number;
+    bookId: number;
   }
 }

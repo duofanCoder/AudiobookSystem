@@ -1,7 +1,7 @@
 package com.abao.as.security;
 
 import com.abao.as.model.enums.UserRole;
-import com.abao.as.service.UserService;
+import com.abao.as.service.common.UserService;
 import com.abao.as.dto.model.common.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

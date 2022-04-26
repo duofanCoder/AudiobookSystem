@@ -21,7 +21,7 @@ export function fetchUpdateUser(user: Partial<Dto.User>) {
   return request.post('/user/update', user);
 }
 
-export function fetchUpdateProfile(user: any) {
+export function fetchUpdateProfile(user: Dto.User) {
   return request.post('/user/profile', user);
 }
 export function fetchResetUser(id: number) {

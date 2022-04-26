@@ -1,16 +1,14 @@
 package com.abao.as.controller.v1.api;
 
-import com.abao.as.controller.v1.command.PasswordFormCommand;
-import com.abao.as.controller.v1.command.ProfileFormCommand;
 import com.abao.as.controller.v1.condition.common.UserCondition;
-import com.abao.as.controller.v1.request.ProfileRequest;
-import com.abao.as.controller.v1.request.UserRequest;
-import com.abao.as.controller.v1.request.UserSignupRequest;
-import com.abao.as.dto.mapper.UserMapper;
+import com.abao.as.controller.v1.request.common.ProfileRequest;
+import com.abao.as.controller.v1.request.common.UserRequest;
+import com.abao.as.controller.v1.request.common.UserSignupRequest;
+import com.abao.as.dto.mapper.common.UserMapper;
 import com.abao.as.dto.model.common.UserDto;
 import com.abao.as.dto.response.Response;
 import com.abao.as.model.enums.UserRole;
-import com.abao.as.service.UserService;
+import com.abao.as.service.common.UserService;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

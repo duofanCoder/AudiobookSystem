@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @Slf4j
-@ControllerAdvice
+//@ControllerAdvice
 public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static void logFormat(String exMessage, String uri) {
@@ -53,7 +53,7 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex instanceof IllegalArgumentException) {
             return new ResponseEntity(Response.error().setMessage(ex.getMessage()), httpStatus);
         } else if (ex instanceof MultipartException) {
-            return new ResponseEntity(Response.error().setMessage("文件过大,请控制文件大小"), httpStatus);
+            return new ResponseEntity(Response.error().setMessage("文件上传失败！"), httpStatus);
         } else if (ex instanceof RuntimeException) {
             return new ResponseEntity(Response.error().setMessage(ex.getMessage()), httpStatus);
         }

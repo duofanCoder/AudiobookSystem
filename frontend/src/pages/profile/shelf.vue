@@ -9,11 +9,14 @@
       <p class="text-2xl">书籍</p>
       <p class="mt-2 tracking-widest mb-4">收藏过的书籍都会出现在这里。</p>
       <!-- w-50 -->
-      <template v-for="item of 12" :key="item">
-        <div class="flex mb-6">
-          <BookList class="pr-12 hover:cursor-pointer" @click="jump2Detail" />
+      <template v-for="item in data" :key="item.id">
+        <div class="flex mb-6 justify-between">
+          <router-link :to="{ name: 'detail', query: { bookId: item.id } }">
+            <BookList :book="item" class="pr-12 hover:cursor-pointer" />
+          </router-link>
+
           <div class="h-full flex">
-            <n-button type="error" class="mb-auto">移除</n-button>
+            <n-button type="error" @click="removeLove(item.id)" class="mb-auto">移除</n-button>
           </div>
         </div>
       </template>
@@ -22,15 +25,33 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { fetchGetBook, fetchGetLoveBook, fetchLoveBook } from '@/service';
+  import { onMounted, ref } from 'vue';
   import { useRouter } from 'vue-router';
-  const active = ref(false);
 
+  const data = ref<Array<Dto.Book>>([]);
   const router = useRouter();
-
   const jump2Detail = () => {
     router.push('/detail');
   };
+
+  const removeLove = (bookId: number) => {
+    fetchLoveBook(bookId, false).then((res) => {
+      loadData();
+    });
+  };
+
+  const loadData = () => {
+    fetchGetLoveBook().then((res) => {
+      if (res.data != null) {
+        data.value = res.data;
+      }
+    });
+  };
+
+  onMounted(() => {
+    loadData();
+  });
 </script>
 
 <style scoped></style>

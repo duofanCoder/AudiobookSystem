@@ -1,5 +1,6 @@
 package com.abao.as.model.common;
 
+import com.abao.as.model.business.Book;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,5 +31,4 @@ public class File {
     private String suffix;
     private int width;
     private int height;
-
 }

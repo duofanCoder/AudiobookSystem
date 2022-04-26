@@ -10,12 +10,13 @@
       <p class="mt-2 px-6 tracking-widest mb-4">使用听书网的其他用户可能会看到部分信息。</p>
       <!-- w-50 -->
       <div
+        @click="showChangeAvatar = true"
         class="flex text-base mx-6 border-b py-6 hover:(bg-true-gray-100 mx-0 px-6 cursor-pointer )"
       >
         <div class="inline-flex self-center text-gray-500 w-50">照片</div>
         <div class="inline-flex self-center align-middle">更改照片可帮助您个性化您的账号</div>
         <div class="ml-auto items-center inline-flex">
-          <n-avatar :size="56" round src="/src/assets/img/avatar.png"> </n-avatar>
+          <n-avatar :size="56" round :src="userInfo.avatar"> </n-avatar>
         </div>
       </div>
 
@@ -124,12 +125,22 @@
       <n-button type="primary" @click="updatePassword">确定</n-button>
     </n-space>
   </n-modal>
+
+  <n-modal
+    v-model:show="showChangeAvatar"
+    preset="card"
+    title="上传头像"
+    class="w-100 mt-50"
+    :bordered="true"
+  >
+    <Upload v-model:filePath="newAvatarUrl" />
+  </n-modal>
 </template>
 
 <script setup lang="ts">
-  import { fetchPasswordUser } from '@/service';
+  import { fetchPasswordUser, fetchUpdateProfile } from '@/service';
   import { useUserStore } from '@/store';
-  import { computed, ref } from 'vue';
+  import { computed, watch, ref, toRaw, unref } from 'vue';
 
   const userStore = useUserStore();
 
@@ -137,6 +148,7 @@
     return userStore.userInfo;
   });
   const showPassswordModalRef = ref(false);
+  const showChangeAvatar = ref(false);
   const confirmChangePasswordRef = ref('');
   const changePasswordRef = ref('');
   const updatePassword = () => {
@@ -151,6 +163,25 @@
       });
     }
   };
+  const newAvatarUrl = ref('');
+
+  const saveUserInfo = async () => {
+    userInfo.value.avatar = newAvatarUrl.value;
+    // const data = await fetchUpdateProfile(toRaw(userInfo));
+    // console.log(data);
+    // if (data.error == null) {
+    fetchUpdateProfile(toRaw(unref(userInfo))).then((res) => {
+      console.log(res);
+      userStore.updateUserInfo(toRaw(unref(userInfo)));
+      window.$message.success('信息已更新');
+    });
+
+    // }
+  };
+  watch(newAvatarUrl, (n) => {
+    console.log(n);
+    saveUserInfo();
+  });
 </script>
 
 <style scoped></style>
